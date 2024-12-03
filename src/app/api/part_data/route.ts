@@ -6,14 +6,6 @@ let parts = [
   { id: 3, description: "Engine Oil", price: 15.0, quantity: 12 },
 ];
 
-//Interfaces for type safety
-interface part {
-  id: number;
-  description: string;
-  price: number;
-  quantity: number;
-}
-
 //Get request to request the server to display all parts
 //Tested in Postmen
 export async function GET(params: NextRequest) {
