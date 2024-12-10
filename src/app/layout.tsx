@@ -1,4 +1,5 @@
-import { Toaster, toast } from "sonner";
+import { Toaster } from "sonner";
+import "./globals.css";
 
 export const metadata = {
   title: "Next.js",
@@ -12,13 +13,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-background min-h-screen">
         {children}
         <Toaster
           position="top-right"
           toastOptions={{
             unstyled: true,
             classNames: {
+              toast: "bg-blue-400",
               error: "bg-red-400",
               success: "text-green-400",
               warning: "text-yellow-400",

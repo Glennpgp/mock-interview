@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import NewPartForm from "./CreatePartForm";
 import { toast } from "sonner";
+import ClientOnly from "./ClientOnly";
 
 interface Part {
   id: number;
@@ -147,7 +148,7 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 grid h-screen place-items-center">
+    <div className="min-h-screen bg-background text-foreground">
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
