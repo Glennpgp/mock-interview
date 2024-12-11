@@ -8,7 +8,7 @@ export interface Part {
 }
 
 // In-memory storage
-export let parts: Part[] = [
+export const parts: Part[] = [
   { id: 1, description: "Wire", price: 5.99, quantity: 5 },
   { id: 2, description: "Brake Fluid", price: 4.9, quantity: 20 },
   { id: 3, description: "Engine Oil", price: 15.0, quantity: 12 },
@@ -18,10 +18,15 @@ export let parts: Part[] = [
 export async function GET() {
   try {
     return NextResponse.json(parts);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch parts" },
-      { status: 500 }
+  } catch (error: unknown) {
+    console.error("Error:", error);
+    return new Response(
+      JSON.stringify({
+        error: "Unable to retrive data, internal Server Error",
+      }),
+      {
+        status: 500,
+      }
     );
   }
 }
@@ -49,10 +54,13 @@ export async function POST(request: NextRequest) {
 
     parts.push(newPart);
     return NextResponse.json(newPart, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to create part" },
-      { status: 500 }
+  } catch (error: unknown) {
+    console.error("Error:", error);
+    return new Response(
+      JSON.stringify({ error: "Unable to create a part, internal server Err" }),
+      {
+        status: 500,
+      }
     );
   }
 }

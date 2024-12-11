@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import NewPartForm from "./CreatePartForm";
 import { toast } from "sonner";
-import ClientOnly from "./ClientOnly";
 
 interface Part {
   id: number;
@@ -40,11 +39,16 @@ export default function Home() {
   const fetchParts = async () => {
     try {
       const response = await fetch("/api/part_data");
-      if (!response.ok) toast.error("Failed to fetch parts");
+      if (!response.ok) {
+        setError("Failed to fetch parts");
+        toast.error("Failed to fetch parts");
+        return;
+      }
       const data = await response.json();
       setParts(data);
-    } catch (err) {
-      toast.error("Failed to load parts");
+      setError(null);
+    } catch (error) {
+      setError("Failed to load parts");
       toast.error("Failed to load parts");
     } finally {
       setLoading(false);
@@ -129,13 +133,17 @@ export default function Home() {
       if (!response.ok) toast.error("Failed to place order");
 
       const order = await response.json();
+      setOrderStatus(
+        `Order placed successfully! Total: $${order.totalCost.toFixed(2)}`
+      );
       toast.success(
         `Order placed successfully! Total: $${order.totalCost.toFixed(2)}`
       );
       setCart([]);
+      setError(null);
       fetchParts(); // Refresh parts list
-    } catch (err) {
-      toast.error("Failed to place order");
+    } catch (error) {
+      setError("Failed to place order");
     }
   };
 
@@ -180,7 +188,7 @@ export default function Home() {
                   disabled={part.quantity === 0}
                   className={`mt-2 px-4 py-2 rounded ${
                     part.quantity === 0
-                      ? "bg-gray-300 cursor-not-allowed"
+                      ? "bg-black-300 cursor-not-allowed"
                       : "bg-blue-500 hover:bg-blue-600 text-white"
                   }`}
                 >
@@ -209,13 +217,14 @@ export default function Home() {
                     <div className="flex items-center mt-2">
                       <label className="mr-2">Quantity:</label>
                       <input
+                        color="black"
                         type="number"
                         min="1"
                         value={item.quantity}
                         onChange={(e) =>
                           updateQuantity(item.partId, parseInt(e.target.value))
                         }
-                        className="border rounded px-2 py-1 w-20"
+                        className="border rounded px-2 py-1 w-20 text-blue-800"
                       />
                     </div>
                     <p className="mt-2">
@@ -224,7 +233,7 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => removeFromCart(item.partId)}
-                    className="mt-2 px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
+                    className="mt-2 px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-black"
                   >
                     Remove
                   </button>

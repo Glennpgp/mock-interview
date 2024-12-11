@@ -78,6 +78,9 @@ export default function CreatePartForm({ onPartCreated }: CreatePartFormProps) {
   return (
     <ClientOnly>
       <div className="bg-blue-400 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h1 className="align-middle text-blue-600 text-center font-medium tracking-wide">
+          AUXO
+        </h1>
         <h2 className="text-xl font-bold mb-4">Create New Part</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
