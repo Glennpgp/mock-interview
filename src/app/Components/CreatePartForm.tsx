@@ -83,7 +83,7 @@ export default function CreatePartForm({ onPartCreated }: CreatePartFormProps) {
   };
 
   return (
-    <div className="bg-blue-400 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <div className="bg-blue-500 shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <h1 className="text-3xl text-blue-950 text-center font-bold tracking-wide mb-4">
         AUXO
       </h1>
