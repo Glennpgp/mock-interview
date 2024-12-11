@@ -109,11 +109,12 @@ export default function Home() {
         item.partId === partId ? { ...item, quantity: newQuantity } : item
       )
     );
-    toast.success(`Updated quantity for ${part.quantity}`);
+    toast.success(`Updated quantity for ${part.description}`);
   };
 
   const placeOrder = async () => {
     if (cart.length === 0) {
+      setError("Cart is empty");
       toast.error("Cart is empty");
       return;
     }
@@ -130,7 +131,11 @@ export default function Home() {
         body: JSON.stringify(orderItems),
       });
 
-      if (!response.ok) toast.error("Failed to place order");
+      if (!response.ok) {
+        setError("Failed to place order");
+        toast.error("Failed to place order");
+        return;
+      }
 
       const order = await response.json();
       setOrderStatus(
@@ -141,9 +146,10 @@ export default function Home() {
       );
       setCart([]);
       setError(null);
-      fetchParts(); // Refresh parts list
+      fetchParts();
     } catch (error) {
       setError("Failed to place order");
+      toast.error("Failed to place order");
     }
   };
 
@@ -156,7 +162,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-gray-900 text-white p-4">
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
@@ -177,7 +183,10 @@ export default function Home() {
           <h2 className="text-2xl font-bold mb-4">Available Parts</h2>
           <div className="grid gap-4">
             {parts.map((part) => (
-              <div key={part.id} className="border rounded-lg p-4 shadow-sm">
+              <div
+                key={part.id}
+                className="border rounded-lg p-4 shadow-sm bg-gray-800"
+              >
                 <h3 className="font-semibold">{part.description}</h3>
                 <div className="mt-2">
                   <p>Price: ${part.price.toFixed(2)}</p>
@@ -188,7 +197,7 @@ export default function Home() {
                   disabled={part.quantity === 0}
                   className={`mt-2 px-4 py-2 rounded ${
                     part.quantity === 0
-                      ? "bg-black-300 cursor-not-allowed"
+                      ? "bg-gray-600 cursor-not-allowed"
                       : "bg-blue-500 hover:bg-blue-600 text-white"
                   }`}
                 >
@@ -209,7 +218,7 @@ export default function Home() {
               {cart.map((item) => (
                 <div
                   key={item.partId}
-                  className="border rounded-lg p-4 shadow-sm"
+                  className="border rounded-lg p-4 shadow-sm bg-gray-800"
                 >
                   <h3 className="font-semibold">{item.description}</h3>
                   <div className="mt-2">
@@ -217,14 +226,13 @@ export default function Home() {
                     <div className="flex items-center mt-2">
                       <label className="mr-2">Quantity:</label>
                       <input
-                        color="black"
                         type="number"
                         min="1"
                         value={item.quantity}
                         onChange={(e) =>
                           updateQuantity(item.partId, parseInt(e.target.value))
                         }
-                        className="border rounded px-2 py-1 w-20 text-blue-800"
+                        className="border rounded px-2 py-1 w-20 text-gray-900"
                       />
                     </div>
                     <p className="mt-2">
@@ -233,7 +241,7 @@ export default function Home() {
                   </div>
                   <button
                     onClick={() => removeFromCart(item.partId)}
-                    className="mt-2 px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-black"
+                    className="mt-2 px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white"
                   >
                     Remove
                   </button>
