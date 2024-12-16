@@ -10,3 +10,4 @@
 - **Next.js**
 - **TypeScript**
 - **REST API**
+- **Sonner**
