@@ -12,6 +12,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    //Counter Hyderation Error
     <html lang="en" suppressHydrationWarning>
       <body className="bg-background min-h-screen" suppressHydrationWarning>
         {children}
