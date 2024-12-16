@@ -7,14 +7,14 @@ interface Part {
   quantity: number;
 }
 
-// In-memory storage
+//In-memory storage
 const parts: Part[] = [
   { id: 1, description: "Wire", price: 5.99, quantity: 5 },
   { id: 2, description: "Brake Fluid", price: 4.9, quantity: 20 },
   { id: 3, description: "Engine Oil", price: 15.0, quantity: 12 },
 ];
 
-// GET /api/part_data
+//GET /api/part_data
 export async function GET() {
   try {
     return NextResponse.json(parts);
@@ -31,7 +31,7 @@ export async function GET() {
   }
 }
 
-// POST /api/part_data
+//POST /api/part_data
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
