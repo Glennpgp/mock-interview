@@ -1,9 +1,9 @@
 # Features in Development
 
-- **Order history tracking**
-- **Customer management**
-- **Detailed reporting**
-- **Authentication and user roles**
+- **Inventory management for auto parts with pricing and stock levels**
+- **Order processing with automatic stock updates**
+- **Real-time quantity validation to prevent overselling**
+- **Simple REST API endpoints for parts data and order processing**
 
 ## Tech Stack
 
