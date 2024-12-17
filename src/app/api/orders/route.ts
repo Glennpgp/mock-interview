@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parts } from "../part_data/route";
+
+interface Part {
+  id: number;
+  description: string;
+  price: number;
+  quantity: number;
+}
 
 interface OrderItem {
   partId: number;
@@ -30,6 +36,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Fetch parts data from the parts API endpoint
+    const partsResponse = await fetch(
+      `${request.nextUrl.origin}/api/part_data`
+    );
+    if (!partsResponse.ok) {
+      return NextResponse.json(
+        { error: "Failed to fetch parts data" },
+        { status: 500 }
+      );
+    }
+    const parts: Part[] = await partsResponse.json();
     const processedItems: ProcessedOrderItem[] = [];
 
     // Process each order item
@@ -60,6 +77,26 @@ export async function POST(request: NextRequest) {
 
       // Update inventory
       part.quantity -= item.quantity;
+      // Update inventory via POST request
+      const updateResponse = await fetch(
+        `${request.nextUrl.origin}/api/part_data`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...part,
+            quantity: part.quantity - item.quantity,
+          }),
+        }
+      );
+      if (!updateResponse.ok) {
+        return NextResponse.json(
+          { error: "Failed to update inventory" },
+          { status: 500 }
+        );
+      }
     }
 
     const order: Order = {
@@ -70,6 +107,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
+    console.error("Error processing order:", error);
     return NextResponse.json(
       { error: "Failed to process order" },
       { status: 500 }

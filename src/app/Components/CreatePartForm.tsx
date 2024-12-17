@@ -95,7 +95,7 @@ export default function CreatePartForm({ onPartCreated }: CreatePartFormProps) {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-black text-sm font-bold mb-2"
               htmlFor="description"
             >
               Description
@@ -113,7 +113,7 @@ export default function CreatePartForm({ onPartCreated }: CreatePartFormProps) {
 
           <div className="mb-4">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-black text-sm font-bold mb-2"
               htmlFor="price"
             >
               Price
@@ -132,7 +132,7 @@ export default function CreatePartForm({ onPartCreated }: CreatePartFormProps) {
 
           <div className="mb-4">
             <label
-              className="block text-gray-700 text-sm font-bold mb-2"
+              className="block text-black text-sm font-bold mb-2"
               htmlFor="quantity"
             >
               Quantity
