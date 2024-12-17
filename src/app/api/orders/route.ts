@@ -24,6 +24,7 @@ interface Order {
   totalCost: number;
 }
 
+//Order POST function
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -46,7 +47,6 @@ export async function POST(request: NextRequest) {
       );
     }
     const parts: Part[] = await partsResponse.json();
-
     const processedItems: ProcessedOrderItem[] = [];
 
     // Process each order item
@@ -75,6 +75,8 @@ export async function POST(request: NextRequest) {
         lineTotal: part.price * item.quantity,
       });
 
+      // Update inventory
+      part.quantity -= item.quantity;
       // Update inventory via POST request
       const updateResponse = await fetch(
         `${request.nextUrl.origin}/api/part_data`,
@@ -89,7 +91,6 @@ export async function POST(request: NextRequest) {
           }),
         }
       );
-
       if (!updateResponse.ok) {
         return NextResponse.json(
           { error: "Failed to update inventory" },
