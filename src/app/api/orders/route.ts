@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { parts } from "../part_data/route";
+import { stockservice } from "../../services/stock";
 
 interface OrderItem {
   partId: number;
@@ -17,8 +17,7 @@ interface Order {
   items: ProcessedOrderItem[];
   totalCost: number;
 }
-
-//Order POST function
+//POST request to order parts
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -30,9 +29,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const parts = stockservice.getParts();
     const processedItems: ProcessedOrderItem[] = [];
 
-    // Process each order item
+    // Validate all items first before making any updates
     for (const item of body) {
       const part = parts.find((p) => p.id === item.partId);
 
@@ -42,10 +42,12 @@ export async function POST(request: NextRequest) {
           { status: 404 }
         );
       }
-
+      //if the user orders more parts than the stock
       if (item.quantity > part.quantity) {
         return NextResponse.json(
-          { error: `Insufficient quantity for ${part.description}` },
+          {
+            error: `Insufficient quantity for ${part.description}. Available: ${part.quantity}, Requested: ${item.quantity}`,
+          },
           { status: 400 }
         );
       }
@@ -55,23 +57,34 @@ export async function POST(request: NextRequest) {
         quantity: item.quantity,
         description: part.description,
         price: part.price,
-        lineTotal: part.price * item.quantity,
+        lineTotal: Number((part.price * item.quantity).toFixed(2)),
       });
+    }
 
-      // Update inventory
-      part.quantity -= item.quantity;
+    // Process all inventory updates
+    for (const item of processedItems) {
+      const part = parts.find((p) => p.id === item.partId);
+      if (part) {
+        const newQuantity = part.quantity - item.quantity;
+        stockservice.updatePartQuantity(part.id, newQuantity);
+      }
     }
 
     const order: Order = {
       id: Date.now(),
       items: processedItems,
-      totalCost: processedItems.reduce((sum, item) => sum + item.lineTotal, 0),
+      totalCost: Number(
+        processedItems.reduce((sum, item) => sum + item.lineTotal, 0).toFixed(2)
+      ),
     };
 
     return NextResponse.json(order, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: "Failed to process order" },
+      {
+        error: "Failed to process order",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }
